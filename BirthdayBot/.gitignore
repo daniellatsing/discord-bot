@@ -1,0 +1,25 @@
+# DO NOT COMMIT THIS FILE — contains secrets
+appsettings.json
+
+# Commit this sample config instead
+# appsettings.example.json
+
+# Ignore local SQLite database file
+*.db
+
+# Build and dependency output
+bin/
+obj/
+
+# Rider / VS Code / VS settings
+.vscode/
+.idea/
+*.user
+*.suo
+
+# EF Core migration snapshots (optional)
+Migrations/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
