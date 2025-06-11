@@ -1,10 +1,15 @@
-﻿using Discord.WebSocket;
+﻿using Discord;
+using Discord.WebSocket;
+using Discord.Commands;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using BirthdayBot.Data;
 using BirthdayBot.Services;
-using Microsoft.Extensions.Configuration;
+using BirthdayBot.Commands;
+using BirthdayBot.Config;
 
 namespace BirthdayBot
 {
@@ -15,20 +20,26 @@ namespace BirthdayBot
       var builder = Host.CreateDefaultBuilder(args)
         .ConfigureAppConfiguration((context, config) =>
         {
-          config.AddJsonFile("appsettings.json", optional: false);
+          config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
         })
         .ConfigureServices((context, services) =>
         {
+
+          services.AddSingleton<DiscordSocketClient>();
+          services.AddSingleton<CommandService>();
+
+          services.AddHostedService<BotService>();
+
+          services.Configure<DiscordSettings>(context.Configuration.GetSection("Discord"));
+          services.AddSingleton(res => res.GetRequiredService<IOptions<DiscordSettings>>().Value);
           services.AddDbContext<AppDbContext>(options =>
             options.UseSqlite(context.Configuration.GetConnectionString("DefaultConnection")));
-          services.AddSingleton<DiscordSocketClient>();
-          services.AddSingleton<GiphyService>();
-          services.AddHttpClient();
-          services.AddHostedService<BotService>();
-        });
 
+          services.AddHttpClient();
+          services.AddSingleton<GiphyService>();
+        });
+        
       await builder.Build().RunAsync();
-      await Task.Delay(-1);
     }
   }
 }
