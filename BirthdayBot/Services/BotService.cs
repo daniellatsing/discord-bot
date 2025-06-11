@@ -1,8 +1,5 @@
 
 using Microsoft.Extensions.Hosting;
-using System.Threading;
-using System.Threading.Tasks;
-using BirthdayBot.Services;
 using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
